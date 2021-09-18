@@ -22,7 +22,7 @@ import {GET_NEWS_REQUEST} from '../redux/store/TypeConstants';
 
 export default function AddEditElements(props) {
   const [onScrolled, setOnScrolled] = useState(false);
-  const [listSelected, setListSelected] = useState(false);
+  const [listSelected, setListSelected] = useState(true);
 
   const dispatch = useDispatch();
   const AuthReducer = useSelector(state => state.AuthReducer);
