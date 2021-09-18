@@ -3,7 +3,7 @@ import {View, Text, Image, Linking, TouchableOpacity} from 'react-native';
 import {Colors} from '../themes/Themes';
 import normalise from '../utils/helpers/dimen';
 import PropTypes from 'prop-types';
-
+import moment from 'moment';
 export default function NewsItem(props) {
   const [readMore, setReadMore] = useState(false);
 
@@ -59,11 +59,18 @@ export default function NewsItem(props) {
           }}>
           {props.summary}
         </Text>
-        {props.summary.length > 80 && (
-          <Text onPress={() => setReadMore(!readMore)}>{` ${
-            readMore ? '...Read Less' : '...Read More'
-          }`}</Text>
+        {readMore && (
+          <Text
+            style={{
+              marginVertical: normalise(5),
+            }}>{` Published: ${moment(props.createdAt).format(
+            'DD MMM, YYYY',
+          )}`}</Text>
         )}
+
+        <Text onPress={() => setReadMore(!readMore)}>{` ${
+          readMore ? '...Read Less' : '...Read More'
+        }`}</Text>
         <TouchableOpacity
           onPress={async () => {
             const supported = await Linking.canOpenURL(props.link);
@@ -97,6 +104,7 @@ NewsItem.propTypes = {
   headline: PropTypes.string,
   summary: PropTypes.string,
   link: PropTypes.string,
+  createdAt: PropTypes.string,
   marginVertical: PropTypes.number,
 };
 
@@ -109,5 +117,6 @@ NewsItem.defaultProps = {
   headline: '',
   summary: '',
   link: '',
+  createdAt: '',
   marginVertical: normalise(20),
 };
