@@ -23,6 +23,7 @@ import {GET_NEWS_REQUEST} from '../redux/store/TypeConstants';
 export default function AddEditElements(props) {
   const [onScrolled, setOnScrolled] = useState(false);
   const [listSelected, setListSelected] = useState(true);
+  const [scrollPos, setScrollPos] = useState(0);
 
   const dispatch = useDispatch();
   const AuthReducer = useSelector(state => state.AuthReducer);
@@ -84,7 +85,7 @@ export default function AddEditElements(props) {
   return (
     <>
       <MyStatusBar
-        barStyle={'dark-content'}
+        barStyle={'light-content'}
         backgroundColor={Colors.themeBlue}
       />
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.themeBlue}}>
@@ -115,69 +116,87 @@ export default function AddEditElements(props) {
           </TouchableOpacity>
         </View>
 
-        {listSelected && (
-          <FlatList
-            showsVerticalScrollIndicator={false}
+        <View
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            flex: 1,
+          }}>
+          <View
             style={{
-              height: '90%',
-            }}
-            data={AuthReducer.newsData}
-            renderItem={renderNewsItem}
-            scrollEnabled={() => {
-              props.totalPageCount >= offset ? true : false;
-            }}
-            windowSize={10}
-            keyExtractor={(item, index) => index.toString()}
-            showsHorizontalVerticalIndicator={false}
-            onEndReached={() => {
-              if (onScrolled) {
-                if (AuthReducer.newDataAvailable) {
-                  dispatch(
-                    getNewsRequestAction({
-                      pageNumber: AuthReducer.pageNumber + 1,
-                    }),
-                  );
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              left: listSelected ? '0%' : '-100%',
+            }}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              style={{
+                height: '90%',
+              }}
+              data={AuthReducer.newsData}
+              renderItem={renderNewsItem}
+              scrollEnabled={() => {
+                props.totalPageCount >= offset ? true : false;
+              }}
+              windowSize={10}
+              keyExtractor={(item, index) => index.toString()}
+              showsHorizontalVerticalIndicator={false}
+              onEndReached={() => {
+                if (onScrolled) {
+                  if (AuthReducer.newDataAvailable) {
+                    dispatch(
+                      getNewsRequestAction({
+                        pageNumber: AuthReducer.pageNumber + 1,
+                      }),
+                    );
+                  }
                 }
-              }
-            }}
-            onEndReachedThreshold={0.5}
-            onMomentumScrollBegin={() => setOnScrolled(true)}
-            ListFooterComponent={BottomView}
-          />
-        )}
-
-        {!listSelected && (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            numColumns={2}
+              }}
+              onEndReachedThreshold={0.5}
+              onMomentumScrollBegin={() => setOnScrolled(true)}
+              ListFooterComponent={BottomView}
+            />
+          </View>
+          <View
             style={{
-              height: '90%',
-            }}
-            contentContainerStyle={{justifyContent: 'space-around'}}
-            data={AuthReducer.newsData}
-            renderItem={renderGridNewsItem}
-            scrollEnabled={() => {
-              props.totalPageCount >= offset ? true : false;
-            }}
-            windowSize={10}
-            keyExtractor={(item, index) => index.toString()}
-            showsHorizontalVerticalIndicator={false}
-            onEndReached={() => {
-              if (onScrolled) {
-                if (AuthReducer.newDataAvailable) {
-                  dispatch(
-                    getNewsRequestAction({
-                      pageNumber: AuthReducer.pageNumber + 1,
-                    }),
-                  );
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              left: !listSelected ? '0%' : '-100%',
+            }}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              numColumns={2}
+              style={{
+                height: '90%',
+              }}
+              contentContainerStyle={{justifyContent: 'space-around'}}
+              data={AuthReducer.newsData}
+              renderItem={renderGridNewsItem}
+              scrollEnabled={() => {
+                props.totalPageCount >= offset ? true : false;
+              }}
+              windowSize={10}
+              keyExtractor={(item, index) => index.toString()}
+              showsHorizontalVerticalIndicator={false}
+              onEndReached={() => {
+                if (onScrolled) {
+                  if (AuthReducer.newDataAvailable) {
+                    dispatch(
+                      getNewsRequestAction({
+                        pageNumber: AuthReducer.pageNumber + 1,
+                      }),
+                    );
+                  }
                 }
-              }
-            }}
-            onEndReachedThreshold={0.5}
-            onMomentumScrollBegin={() => setOnScrolled(true)}
-            ListFooterComponent={BottomView}
-          />
-        )}
+              }}
+              onEndReachedThreshold={0.5}
+              onMomentumScrollBegin={() => setOnScrolled(true)}
+              ListFooterComponent={BottomView}
+            />
+          </View>
+        </View>
       </SafeAreaView>
     </>
   );
